@@ -12,7 +12,7 @@ Furthermore, as result of offering multiple ways for users to mint new EZY coins
 #### Maximum supply: - *21,000,000 (21 million) EZY*
 #### Consensus mechanism: - *Proof-of-Stake (80% masternodes, 20% stakers)*
 #### Algorithm: - *Quark-hash* 
-#### Masternode collateral - *2,000 EZY*  
+#### Masternode collateral - *5,000 EZY*  
 #### Features: - *SwiftTX, budget, treausury and masternode governance is enabled* 
 #### RPC Port: - *52321* 
 #### P2P Port: - *52320* 
