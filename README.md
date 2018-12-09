@@ -20,7 +20,21 @@ Furthermore, as result of offering multiple ways for users to mint new EZY coins
 #
 
 ### Block reward breakdown (Block height - Reward per block)
-#
+#Phase	Block Height	Reward	Masternodes 	Stakers
+Phase 1	1000 - 9999	0.1 (pow)	-	-
+Phase 2	10k - 19999	9.5	90%	10%
+Phase 3	20k - 24999	12	90%	10%
+Phase 4	25k - 49999	18	90%	10%
+Phase 5	50k - 99999	14.5	90%	10%
+Phase 6	100k - 249999	11.5	90%	10%
+Phase 7	250k - 499999	8.5	90%	10%
+Phase 8	500k - 999999	6.5	90%	10%
+Phase 9	1M -2499999	5	90%	10%
+Phase 10	2.5M -4999999	3.75	90%	10%
+Phase 11	5M -7499999	3.25	90%	10%
+Phase 12	7.5M -9999999	2.75	90%	10%
+Phase Final	10000000+	2	90%	10%
+
 
 
 
