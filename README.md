@@ -9,8 +9,7 @@ Furthermore, as result of offering multiple ways for users to mint new EZY coins
 #
 
 #### Block times: - *1 minute* 
-#### Maximum supply: - *21,000,000 (21 million) EZY*
-#### Consensus mechanism: - *Proof-of-Stake (80% masternodes, 20% stakers)*
+#### Consensus mechanism: - *Proof-of-Stake (90% masternodes, 10% stakers)*
 #### Algorithm: - *Quark-hash* 
 #### Masternode collateral - *5,000 EZY*  
 #### Features: - *SwiftTX, budget, treausury and masternode governance is enabled* 
