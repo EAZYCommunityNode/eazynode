@@ -1115,7 +1115,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 
     //Coinstake is also only valid in a block, not as a loose transaction
     if (tx.IsCoinStake())
-        return state.DoS(100, error("AcceptToMemoryPool: coinstake as individual tx"),
+        return state.DoS(100, error("AcceptToMemoryPool: coinstake as individual tx. txid=%s", tx.GetHash().GetHex()),
             REJECT_INVALID, "coinstake");
 
     // Rather not work on nonstandard transactions (unless -testnet/-regtest)
@@ -1914,7 +1914,7 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
             CAmount nTxFee = nValueIn - tx.GetValueOut();
              if (nTxFee < 0)
                  return state.DoS(100, error("CheckInputs() : %s nTxFee < 0", tx.GetHash().ToString()),
-                     REJECT_INVALID, "bad-txns-fee-negative");
+                    REJECT_INVALID, "bad-txns-fee-negative");
             nFees += nTxFee;
              if (!MoneyRange(nFees))
                  return state.DoS(100, error("CheckInputs() : nFees out of range"),
@@ -3636,7 +3636,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             pwalletMain->AutoCombineDust();
     }
 
-    LogPrintf("%s : ACCEPTED in %ld milliseconds with size=%d\n", __func__, GetTimeMillis() - nStartTime,
+    LogPrintf("%s : ACCEPTED Block %ld in %ld milliseconds with size=%d\n", __func__, GetHeight(), GetTimeMillis() - nStartTime,
               pblock->GetSerializeSize(SER_DISK, CLIENT_VERSION));
 
     return true;
@@ -4655,8 +4655,7 @@ bool fRequestedSporksIDB = false;
 bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, int64_t nTimeReceived)
 {
     RandAddSeedPerfmon();
-    if (fDebug)
-        LogPrintf("received: %s (%u bytes) peer=%d\n", SanitizeString(strCommand), vRecv.size(), pfrom->id);
+    LogPrint("net", "received: %s (%u bytes) peer=%d\n", SanitizeString(strCommand), vRecv.size(), pfrom->id);
     if (mapArgs.count("-dropmessagestest") && GetRand(atoi(mapArgs["-dropmessagestest"])) == 0) {
         LogPrintf("dropmessagestest DROPPING RECV MESSAGE\n");
         return true;
