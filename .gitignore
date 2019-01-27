@@ -1,6 +1,6 @@
-.gitignore
 *.sublime-project
 *.sublime-workspace
+.vscode
 todo.txt
 reset-files.bash
 
@@ -11,7 +11,7 @@ src/ezy
 src/ezyd
 src/ezy-cli
 src/ezy-tx
-src/test/test_ezy
+src/test/test_ezyd
 src/qt/test/test_ezy-qt
 
 # autoreconf
@@ -38,14 +38,12 @@ confdefs.h
 conftest.cpp
 conftest.err
 libtool
-src/config/pivx-config.h
-src/config/pivx-config.h.in
+src/config/ezy-config.h
+src/config/ezy-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
 contrib/devtools/split-debug.sh
-
-src/univalue/gen
 
 src/qt/*.moc
 src/qt/moc_*.cpp
@@ -64,7 +62,6 @@ src/qt/test/moc*.cpp
 *.pyc
 *.o
 *.o-*
-*.patch
 .ezy
 *.a
 *.pb.cc
@@ -85,8 +82,7 @@ src/qt/test/moc*.cpp
 *.qm
 Makefile
 ezy-qt
-EZY-Qt.app
-background.tiff*
+Ezy-Qt.app
 
 # Unit-tests
 Makefile.test
@@ -102,6 +98,7 @@ qrc_*.cpp
 # Mac specific
 .DS_Store
 build
+background.tiff*
 
 #lcov
 *.gcno
@@ -114,20 +111,16 @@ coverage_percent.txt
 linux-coverage-build
 linux-build
 win32-build
-test/config.ini
-test/cache/*
 qa/pull-tester/run-bitcoind-for-test.sh
 qa/pull-tester/tests-config.sh
 qa/pull-tester/cache/*
 qa/pull-tester/test.*/*
 
-!src/leveldb*/Makefile
-
 .cproject
 .project
 /doc/doxygen/
 /nbproject/
-libbitcoinconsensus.pc
+
 .idea
 CMakeLists.txt
 cmake-build-debug
