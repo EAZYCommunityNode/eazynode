@@ -44,6 +44,13 @@ src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
 contrib/devtools/split-debug.sh
+src/Makefile.in
+src/secp256k1/Makefile.in
+src/secp256k1/aclocal.m4
+src/secp256k1/configure
+src/univalue/Makefile.in
+src/univalue/aclocal.m4
+src/univalue/configure
 
 src/qt/*.moc
 src/qt/moc_*.cpp
