@@ -51,6 +51,10 @@ src/secp256k1/configure
 src/univalue/Makefile.in
 src/univalue/aclocal.m4
 src/univalue/configure
+src/secp256k1/build-aux/
+src/secp256k1/src/libsecp256k1-config.h.in
+src/univalue/build-aux/
+src/univalue/univalue-config.h.in
 
 src/qt/*.moc
 src/qt/moc_*.cpp
