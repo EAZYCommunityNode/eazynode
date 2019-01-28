@@ -40,7 +40,6 @@ conftest.err
 libtool
 src/config/ezy-config.h
 src/config/ezy-config.h.in
-src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
 contrib/devtools/split-debug.sh
@@ -65,10 +64,8 @@ src/qt/test/moc*.cpp
 src/obj/
 src/secp256k1/libsecp256k1.pc
 src/secp256k1/src/libsecp256k1-config.h
-src/secp256k1/src/stamp-h1
 src/univalue/pc/libunivalue-uninstalled.pc
 src/univalue/pc/libunivalue.pc
-src/univalue/stamp-h1
 src/univalue/univalue-config.h
 
 .deps
