@@ -174,8 +174,8 @@ public:
         strSporkKeyOld = "04f8911efb843b124dfcf902d95dbe737d79c945dd3730f5ff9cd5f10c447abedfee4de6d032ff6ff0684dfdc6c9af21eafeb42336b634ef785d926764bdaef154";
         //?? strSporkKey = "02aa653a1d1db8310f1f48499df2035cbfa47e44d00e1679e216ef383c85c380e3";
         strSporkKey = "04178924f8c5bbafc47ad741c8bcd4fe8ff96efeb8ce5e65d5f2c562bc43ac0a57bec7d921feca0719ddac03e2a8e4e22f83ce0f89b3ca1b5fcbad7896ed45db90";
-        nEnforceNewSporkKey = 1569801601; //!> Sporks signed after Saturday, September 27, 2018 8:29:00 PM GMT must use the new spork key
-        nRejectOldSporkKey = 1569801600; //!> Reject old spork key after Friday, August 27, 2018 8:00:00 PM GMT
+        nEnforceNewSporkKey = 1546300801; //!> Sporks signed after 01/01/2019 @ 12:00am (UTC)
+        nRejectOldSporkKey = 1546300800; //!> Reject old spork key after 01/01/2019 @ 12:00am (UTC)
 
         strMasternodePoolDummyAddress = "ESJVWUkt6HtSCY2SaJ2akeyJUg8bg1hW3S";
         nStartMasternodePayments = 4070908800; 
