@@ -95,7 +95,7 @@ public:
             foreground = COLOR_BLACK;
         }
         painter->setPen(foreground);
-        QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true, BitcoinUnits::separatorNever);
+        QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true, BitcoinUnits::separatorAlways);
         if (!confirmed) {
             amountText = QString("[") + amountText + QString("]");
         }
@@ -144,6 +144,8 @@ OverviewPage::OverviewPage(QWidget* parent) : QWidget(parent),
     ui->labelWalletStatus->setText("(" + tr("out of sync") + ")");
     ui->labelTransactionsStatus->setText("(" + tr("out of sync") + ")");
 
+    SetLinks();
+
     // start with displaying the "out of sync" warnings
     showOutOfSyncWarning(true);
 }
@@ -169,27 +171,68 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     currentWatchUnconfBalance = watchUnconfBalance;
     currentWatchImmatureBalance = watchImmatureBalance;
 
+    CAmount nLockedBalance = 0;
+    CAmount nWatchOnlyLockedBalance = 0;
+    if (pwalletMain) {
+        nLockedBalance = pwalletMain->GetLockedCoins();
+        nWatchOnlyLockedBalance = pwalletMain->GetLockedWatchOnlyBalance();
+    }
+
+    // EZY Balance
+    CAmount nTotalBalance = balance + unconfirmedBalance;
+    CAmount ezyAvailableBalance = balance - immatureBalance - nLockedBalance;
+
+    // EZY Watch-Only Balance
+    CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance;
+    CAmount nAvailableWatchBalance = watchOnlyBalance - watchImmatureBalance - nWatchOnlyLockedBalance;
+
     // EZY labels
-    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance - immatureBalance, false, BitcoinUnits::separatorNever));
-    ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorNever));
-    ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorNever));
-    ui->labelTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance + unconfirmedBalance, false, BitcoinUnits::separatorNever));
+    ui->labelBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, ezyAvailableBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelLockedBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nLockedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nTotalBalance, false, BitcoinUnits::separatorAlways));
 
     // Watchonly labels
-    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance, false, BitcoinUnits::separatorNever));
-    ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorNever));
-    ui->labelWatchImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchImmatureBalance, false, BitcoinUnits::separatorNever));
-    ui->labelWatchTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance + watchUnconfBalance + watchImmatureBalance, false, BitcoinUnits::separatorNever));
+    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nAvailableWatchBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchImmatureBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchLocked->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nWatchOnlyLockedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nTotalWatchBalance, false, BitcoinUnits::separatorAlways));
 
-    // only show immature (newly mined) balance if it's non-zero, so as not to complicate things
-    // for the non-mining users
-    bool showImmature = immatureBalance != 0;
-    bool showWatchOnlyImmature = watchImmatureBalance != 0;
+    // Only show most balances if they are non-zero for the sake of simplicity
+    QSettings settings;
+    bool settingShowAllBalances = !settings.value("fHideZeroBalances").toBool();
 
-    // for symmetry reasons also show immature label when the watch-only one is shown
-    ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature);
+    bool showWatchOnly = nTotalWatchBalance != 0;
+
+    // EZY Available
+    bool showEZYAvailable = settingShowAllBalances || ezyAvailableBalance != nTotalBalance;
+    bool showWatchOnlyEZYAvailable = showEZYAvailable || nAvailableWatchBalance != nTotalWatchBalance;
+    ui->labelBalanceText->setVisible(showEZYAvailable || showWatchOnlyEZYAvailable);
+    ui->labelBalance->setVisible(showEZYAvailable || showWatchOnlyEZYAvailable);
+    ui->labelWatchAvailable->setVisible(showEZYAvailable && showWatchOnly);
+
+    // EZY Pending
+    bool showEZYPending = settingShowAllBalances || unconfirmedBalance != 0;
+    bool showWatchOnlyEZYPending = showEZYPending || watchUnconfBalance != 0;
+    ui->labelPendingText->setVisible(showEZYPending || showWatchOnlyEZYPending);
+    ui->labelUnconfirmed->setVisible(showEZYPending || showWatchOnlyEZYPending);
+    ui->labelWatchPending->setVisible(showEZYPending && showWatchOnly);
+
+    // EZY Immature
+    bool showImmature = settingShowAllBalances || immatureBalance != 0;
+    bool showWatchOnlyImmature = showImmature || watchImmatureBalance != 0;
     ui->labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
-    ui->labelWatchImmature->setVisible(showWatchOnlyImmature); // show watch-only immature balance
+    ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature); // for symmetry reasons also show immature label when the watch-only one is shown
+    ui->labelWatchImmature->setVisible(showWatchOnlyImmature && showWatchOnly); // show watch-only immature balance
+
+    // EZY Locked
+    bool showEZYLocked = settingShowAllBalances || nLockedBalance != 0;
+    bool showWatchOnlyEZYLocked = showEZYLocked || nWatchOnlyLockedBalance != 0;
+    ui->labelLockedBalanceText->setVisible(showEZYLocked || showWatchOnlyEZYLocked);
+    ui->labelLockedBalance->setVisible(showEZYLocked || showWatchOnlyEZYLocked);
+    ui->labelWatchLocked->setVisible(showEZYLocked && showWatchOnly);
 
     static int cachedTxLocks = 0;
 
@@ -206,6 +249,7 @@ void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
     ui->labelWatchonly->setVisible(showWatchOnly);      // show watch-only label
     ui->labelWatchAvailable->setVisible(showWatchOnly); // show watch-only available balance
     ui->labelWatchPending->setVisible(showWatchOnly);   // show watch-only pending balance
+    ui->labelWatchLocked->setVisible(showWatchOnly);     // show watch-only total balance
     ui->labelWatchTotal->setVisible(showWatchOnly);     // show watch-only total balance
 
     if (!showWatchOnly) {
@@ -213,6 +257,7 @@ void OverviewPage::updateWatchOnlyLabels(bool showWatchOnly)
     } else {
         ui->labelBalance->setIndent(20);
         ui->labelUnconfirmed->setIndent(20);
+        ui->labelLockedBalance->setIndent(20);
         ui->labelImmature->setIndent(20);
         ui->labelTotal->setIndent(20);
     }
@@ -285,4 +330,23 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+
+void OverviewPage::SetLinks()
+{
+    ui->labelLinks1->setText("Website:");
+    ui->labelLinks2->setText("Whitepaper:");
+    ui->labelLinks3->setText("Block Explorer:");
+    ui->labelLinks4->setText("Discord:");
+    ui->labelLinks5->setText("Twitter:");
+    ui->labelLinks6->setText("Github:");
+    ui->labelLinks7->setText("");
+
+    ui->labelLinksUrl1->setText("<a href=\"https://eazynode.pro\">https://eazynode.pro</a>");
+    ui->labelLinksUrl2->setText("<a href=\"https://eazynode.pro/doc/WhitepaperEAZYv1.1.pdf\">https://eazynode.pro/doc/WhitepaperEAZYv1.1.pdf</a>");
+    ui->labelLinksUrl3->setText("<a href=\"http://explorer.eazynode.pro\">http://explorer.eazynode.pro</a>");
+    ui->labelLinksUrl4->setText("<a href=\"https://discord.gg/WBb7Qbr\">https://discord.gg/WBb7Qbr</a>");
+    ui->labelLinksUrl5->setText("<a href=\"https://twitter.com/NodeEazy\">https://twitter.com/NodeEazy</a>");
+    ui->labelLinksUrl6->setText("<a href=\"https://github.com/EAZYCommunityNode\">https://github.com/EAZYCommunityNode</a>");
+    ui->labelLinksUrl7->setText("");
 }
