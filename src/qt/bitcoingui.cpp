@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2017-2017 The EZY developers
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2017-2019 The EZY developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -200,15 +200,16 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
     labelConnectionsIcon->setStyleSheet(".QPushButton { background-color: rgba(255, 255, 255, 0);}");
     labelConnectionsIcon->setMaximumSize(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE);
     labelBlocksIcon = new QLabel();
-
+#ifdef ENABLE_WALLET
     if (enableWallet) {
         frameBlocksLayout->addStretch();
         frameBlocksLayout->addWidget(unitDisplayControl);
         frameBlocksLayout->addStretch();
         frameBlocksLayout->addWidget(labelEncryptionIcon);
+        frameBlocksLayout->addStretch();
+        frameBlocksLayout->addWidget(labelStakingIcon);
     }
-    frameBlocksLayout->addStretch();
-    frameBlocksLayout->addWidget(labelStakingIcon);
+#endif // ENABLE_WALLET
     frameBlocksLayout->addStretch();
     frameBlocksLayout->addWidget(labelConnectionsIcon);
     frameBlocksLayout->addStretch();
@@ -291,16 +292,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 {
     QActionGroup* tabGroup = new QActionGroup(this);
 
-    QPixmap overviewIconInactive(":/icons/overview");
-    QPixmap overviewIconActive(":icons/overview_active");
-    QIcon overviewIcon(overviewIconInactive);
-
-    overviewIcon.addPixmap(overviewIconActive,QIcon::Selected,QIcon::On);
-    overviewIcon.addPixmap(overviewIconActive,QIcon::Selected,QIcon::Off);
-    overviewIcon.addPixmap(overviewIconActive,QIcon::Active,QIcon::On);
-    overviewIcon.addPixmap(overviewIconActive,QIcon::Active,QIcon::Off);
-
-    overviewAction = new QAction(overviewIcon, tr("&Overview"), this);
+    overviewAction = new QAction(QIcon(":/icons/overview"), tr("&Overview"), this);
     overviewAction->setStatusTip(tr("Show general overview of wallet"));
     overviewAction->setToolTip(overviewAction->statusTip());
     overviewAction->setCheckable(true);
@@ -311,17 +303,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(overviewAction);
 
-    QPixmap sendIconInactive(":/icons/send");
-    QPixmap sendIconActive(":icons/send_active");
-    QIcon sendIcon(sendIconInactive);
-
-    sendIcon.addPixmap(sendIconActive,QIcon::Selected,QIcon::On);
-    sendIcon.addPixmap(sendIconActive,QIcon::Selected,QIcon::Off);
-    sendIcon.addPixmap(sendIconActive,QIcon::Active,QIcon::On);
-    sendIcon.addPixmap(sendIconActive,QIcon::Active,QIcon::Off);
-
-    sendCoinsAction = new QAction(sendIcon, tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a EZY address"));
+    sendCoinsAction = new QAction(QIcon(":/icons/send"), tr("&Send"), this);
+    sendCoinsAction->setStatusTip(tr("Send coins to a CLG address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -331,17 +314,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(sendCoinsAction);
 
-    QPixmap receiveIconInactive(":/icons/receiving_addresses");
-    QPixmap receiveIconActive(":icons/receiving_addresses_active");
-    QIcon receiveIcon(receiveIconInactive);
-
-    receiveIcon.addPixmap(receiveIconActive,QIcon::Selected,QIcon::On);
-    receiveIcon.addPixmap(receiveIconActive,QIcon::Selected,QIcon::Off);
-    receiveIcon.addPixmap(receiveIconActive,QIcon::Active,QIcon::On);
-    receiveIcon.addPixmap(receiveIconActive,QIcon::Active,QIcon::Off);
-
-    receiveCoinsAction = new QAction(receiveIcon, tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and ezy: URIs)"));
+    receiveCoinsAction = new QAction(QIcon(":/icons/receiving_addresses"), tr("&Receive"), this);
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and collegicoin: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -351,16 +325,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #endif
     tabGroup->addAction(receiveCoinsAction);
 
-    QPixmap historyIconInactive(":/icons/history");
-    QPixmap historyIconActive(":icons/history_active");
-    QIcon historyIcon(historyIconInactive);
-
-    historyIcon.addPixmap(historyIconActive,QIcon::Selected,QIcon::On);
-    historyIcon.addPixmap(historyIconActive,QIcon::Selected,QIcon::Off);
-    historyIcon.addPixmap(historyIconActive,QIcon::Active,QIcon::On);
-    historyIcon.addPixmap(historyIconActive,QIcon::Active,QIcon::Off);
-
-    historyAction = new QAction(historyIcon, tr("&Transactions"), this);
+    historyAction = new QAction(QIcon(":/icons/history"), tr("&Transactions"), this);
     historyAction->setStatusTip(tr("Browse transaction history"));
     historyAction->setToolTip(historyAction->statusTip());
     historyAction->setCheckable(true);
@@ -375,16 +340,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
-        QPixmap masternodesIconInactive(":/icons/masternodes");
-        QPixmap masternodesIconActive(":icons/masternodes_active");
-        QIcon masternodesIcon(masternodesIconInactive);
-
-        masternodesIcon.addPixmap(masternodesIconActive,QIcon::Selected,QIcon::On);
-        masternodesIcon.addPixmap(masternodesIconActive,QIcon::Selected,QIcon::Off);
-        masternodesIcon.addPixmap(masternodesIconActive,QIcon::Active,QIcon::On);
-        masternodesIcon.addPixmap(masternodesIconActive,QIcon::Active,QIcon::Off);
-
-        masternodeAction = new QAction(masternodesIcon, tr("&Masternodes"), this);
+        masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr("&Masternodes"), this);
         masternodeAction->setStatusTip(tr("Browse masternodes"));
         masternodeAction->setToolTip(masternodeAction->statusTip());
         masternodeAction->setCheckable(true);
@@ -581,17 +537,18 @@ void BitcoinGUI::createToolBars()
     if (walletFrame) {
         QToolBar* toolbar = new QToolBar(tr("Tabs toolbar"));
         toolbar->setObjectName("Main-Toolbar"); // Name for CSS addressing
-        toolbar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
-        toolbar->addAction(masternodeAction);
         QSettings settings;
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
         toolbar->setMovable(false); // remove unused icon in upper left corner
+        toolbar->setOrientation(Qt::Vertical);
+        toolbar->setIconSize(QSize(40,40));
         overviewAction->setChecked(true);
 
         /** Create additional container for toolbar and walletFrame and make it the central widget.
@@ -602,6 +559,7 @@ void BitcoinGUI::createToolBars()
         layout->addWidget(walletFrame);
         layout->setSpacing(0);
         layout->setContentsMargins(QMargins());
+        layout->setDirection(QBoxLayout::LeftToRight);
         QWidget* containerWidget = new QWidget();
         containerWidget->setLayout(layout);
         setCentralWidget(containerWidget);
@@ -636,6 +594,11 @@ void BitcoinGUI::setClientModel(ClientModel* clientModel)
         }
 #endif // ENABLE_WALLET
         unitDisplayControl->setOptionsModel(clientModel->getOptionsModel());
+        //Show trayIcon
+        if (trayIcon)
+        {
+          trayIcon->show();
+        }
     } else {
         // Disable possibility to show main window via action
         toggleHideAction->setEnabled(false);
@@ -677,7 +640,6 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     sendCoinsAction->setEnabled(enabled);
     receiveCoinsAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
-    masternodeAction->setEnabled(enabled);
     QSettings settings;
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setEnabled(enabled);
@@ -703,7 +665,7 @@ void BitcoinGUI::createTrayIcon(const NetworkStyle* networkStyle)
     QString toolTip = tr("EZY Core client") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
     trayIcon->setIcon(networkStyle->getAppIcon());
-    trayIcon->show();
+    trayIcon->hide();
 #endif
 
     notificator = new Notificator(QApplication::applicationName(), trayIcon, this);
@@ -1167,6 +1129,7 @@ bool BitcoinGUI::eventFilter(QObject* object, QEvent* event)
     return QMainWindow::eventFilter(object, event);
 }
 
+#ifdef ENABLE_WALLET
 void BitcoinGUI::setStakingStatus()
 {
     if (pwalletMain)
@@ -1183,7 +1146,6 @@ void BitcoinGUI::setStakingStatus()
     }
 }
 
-#ifdef ENABLE_WALLET
 bool BitcoinGUI::handlePaymentRequest(const SendCoinsRecipient& recipient)
 {
     // URI has to be valid
@@ -1219,7 +1181,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
     case WalletModel::UnlockedForStakingOnly:
         labelEncryptionIcon->show();
         labelEncryptionIcon->setIcon(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
-        labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b> for anonimization and staking only"));
+        labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b> for staking only"));
         encryptWalletAction->setChecked(true);
         changePassphraseAction->setEnabled(true);
         unlockWalletAction->setVisible(true);
