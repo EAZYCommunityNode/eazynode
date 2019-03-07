@@ -1626,48 +1626,21 @@ int64_t GetBlockValue(int nHeight)
             return 50000 * COIN;
     }
 
-    if (nHeight < Params().LAST_POW_BLOCK()) {
-        nSubsidy = 10000 * COIN;
-    }
-	else if (nHeight <= 9999 && nHeight >= Params().LAST_POW_BLOCK()) {
-        nSubsidy = 0.1 * COIN;
-    }
-	else if (nHeight <= 19999 && nHeight >= 10000) {
-        nSubsidy = 9.5 * COIN;
-    }
-	else if (nHeight <= 24999 && nHeight >= 20000) {
-        nSubsidy = 12 * COIN;
-    }
-	else if (nHeight <= 49999 && nHeight >= 25000) {
-        nSubsidy = 18 * COIN;
-    }
-	else if (nHeight <= 99999 && nHeight >= 50000) {
-        nSubsidy = 14.5 * COIN;
-    }
-	else if (nHeight <= 249999 && nHeight >= 100000) {
-        nSubsidy = 11.5 * COIN;
-    }
-	else if (nHeight <= 499999 && nHeight >= 250000) {
-        nSubsidy = 8.5 * COIN;
-    }
-	else if (nHeight <= 9999999 && nHeight >= 500000) {
-        nSubsidy = 6.5 * COIN;
-    }
-	else if (nHeight <= 2499000 && nHeight >= 1000000) {
-        nSubsidy = 5 * COIN;
-    }
-	else if (nHeight <= 4999000 && nHeight >= 2500000) {
-        nSubsidy = 3.75 * COIN;
-    }
-	else if (nHeight <= 7499000 && nHeight >= 5000000) {
-        nSubsidy = 3.25 * COIN;
-    }
-	else if (nHeight <= 9999999 && nHeight >= 7500000) {
-        nSubsidy = 2.75 * COIN;
-	}
-    else {
-        nSubsidy = 2 * COIN;
-    }
+         if (nHeight <  Params().LAST_POW_BLOCK())                    { nSubsidy = 10000 * COIN;}
+    else if (nHeight >= Params().LAST_POW_BLOCK() && nHeight <= 9999) { nSubsidy =  0.10 * COIN;}
+
+    else if (nHeight >=   10000 && nHeight <=   19999) { nSubsidy =  9.50 * COIN; }
+    else if (nHeight >=   20000 && nHeight <=   24999) { nSubsidy = 12.00 * COIN; }
+    else if (nHeight >=   25000 && nHeight <=   49999) { nSubsidy = 18.00 * COIN; }
+    else if (nHeight >=   50000 && nHeight <=   99999) { nSubsidy = 14.50 * COIN; }
+    else if (nHeight >=  100000 && nHeight <=  249999) { nSubsidy = 11.50 * COIN; }
+    else if (nHeight >=  250000 && nHeight <=  499999) { nSubsidy =  7.50 * COIN; }
+    else if (nHeight >=  500000 && nHeight <= 9999999) { nSubsidy =  5.50 * COIN; }
+    else if (nHeight >= 1000000 && nHeight <= 2499000) { nSubsidy =  3.50 * COIN; }
+    else if (nHeight >= 2500000 && nHeight <= 4999000) { nSubsidy =  2.75 * COIN; }
+    else if (nHeight >= 5000000 && nHeight <= 7499000) { nSubsidy =  2.25 * COIN; }
+    else if (nHeight >= 7500000 && nHeight <= 9999999) { nSubsidy =  1.50 * COIN; }
+    else                                               { nSubsidy =  0.80 * COIN; }
 
     // Check if we reached the coin max supply.
     int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
