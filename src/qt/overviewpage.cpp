@@ -343,8 +343,8 @@ void OverviewPage::SetLinks()
     ui->labelLinks7->setText("");
 
     ui->labelLinksUrl1->setText("<a href=\"https://eazynode.pro\">https://eazynode.pro</a>");
-    ui->labelLinksUrl2->setText("<a href=\"https://eazynode.pro/doc/WhitepaperEAZYv1.1.pdf\">https://eazynode.pro/doc/WhitepaperEAZYv1.1.pdf</a>");
-    ui->labelLinksUrl3->setText("<a href=\"http://explorer.eazynode.pro\">http://explorer.eazynode.pro</a>");
+    ui->labelLinksUrl2->setText("<a href=\"https://eazynode.pro/doc/whitepaper\">https://eazynode.pro/doc/whitepaper</a>");
+    ui->labelLinksUrl3->setText("<a href=\"https://explorer.eazynode.pro\">https://explorer.eazynode.pro</a>");
     ui->labelLinksUrl4->setText("<a href=\"https://discord.gg/WBb7Qbr\">https://discord.gg/WBb7Qbr</a>");
     ui->labelLinksUrl5->setText("<a href=\"https://twitter.com/NodeEazy\">https://twitter.com/NodeEazy</a>");
     ui->labelLinksUrl6->setText("<a href=\"https://github.com/EAZYCommunityNode\">https://github.com/EAZYCommunityNode</a>");
